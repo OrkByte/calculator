@@ -1,0 +1,76 @@
+/* Reset the box-model */
+div {
+  box-sizing: border-box;
+}
+/* Pass down the box-sizing property */
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#calculator {
+    border: 1px solid #aaa;
+    color: #333;
+    border-radius: 5px;
+    box-shadow: 0 0 10px #888888;
+    padding: 20px;
+}
+
+input {
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    width: 116px;
+    margin-bottom: 12px;
+}
+
+#btnSection {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#numberSection {
+    width: 80px;
+}
+
+#operatorSection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+button {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+    border: 1px solid #aaa;
+    background-color: #f5f5f5;
+    border-radius: 2px;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+  border: 1px solid #979797;
+  cursor: pointer;
+}
+
+button.btnPressed {
+    border: 1px solid #6f6f6f;
+    background-color: #d0d0d0;
+    box-shadow: 0 0 4px #888888;
+}
+
+button.btnInactive {
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    color: #bbb;
+    cursor: default;
+}
