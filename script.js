@@ -1,98 +1,55 @@
 const display = document.querySelector("#display");
 
-const buttons = {
-  "1": document.querySelector("#btnOne"),
-  "2": document.querySelector("#btnTwo"),
-  "3": document.querySelector("#btnThree"),
-  "4": document.querySelector("#btnFour"),
-  "5": document.querySelector("#btnFive"),
-  "6": document.querySelector("#btnSix"),
-  "7": document.querySelector("#btnSeven"),
-  "8": document.querySelector("#btnEight"),
-  "9": document.querySelector("#btnNine"),
-  "0": document.querySelector("#btnZero"),
-  ".": document.querySelector("#btnDot"),
-  "+": document.querySelector("#btnAdd"),
-  "-": document.querySelector("#btnSubtract"),
-  "*": document.querySelector("#btnMultiply"),
-  "/": document.querySelector("#btnDivide"),
-  "=": document.querySelector("#btnEqual"),
-  "c": document.querySelector("#btnClear"),
+// { key: [ domElement, callbackFn ] } The key is the button type and 
+// the value is an array containing the DOM element and a callback function
+const buttons = { 
+  "1": [document.querySelector("#btnOne"), () => assignNum("1")],
+  "2": [document.querySelector("#btnTwo"), () => assignNum("2")],
+  "3": [document.querySelector("#btnThree"), () => assignNum("3")],
+  "4": [document.querySelector("#btnFour"), () => assignNum("4")],
+  "5": [document.querySelector("#btnFive"), () => assignNum("5")],
+  "6": [document.querySelector("#btnSix"), () => assignNum("6")],
+  "7": [document.querySelector("#btnSeven"), () => assignNum("7")],
+  "8": [document.querySelector("#btnEight"), () => assignNum("8")],
+  "9": [document.querySelector("#btnNine"), () => assignNum("9")],
+  "0": [document.querySelector("#btnZero"), () => assignNum("0")],
+  ".": [document.querySelector("#btnDot"), () => assignNum(".")],
+  "+": [document.querySelector("#btnAdd"), () => assignOperator("+", add)],
+  "-": [document.querySelector("#btnSubtract"), () => assignOperator("-", subtract)],
+  "*": [document.querySelector("#btnMultiply"), () => assignOperator("*", multiply)],
+  "/": [document.querySelector("#btnDivide"), () => assignOperator("/", divide)],
+  "=": [document.querySelector("#btnEqual"), () => handleBtnEqualClick("=")],
+  "c": [document.querySelector("#btnClear"), () => handleBtnClearClick("c")],
 }
 
 let valueOne = "";
+let valueTwo = "";
 let operator = "";
 let currentOperatorFunc = null;
-let valueTwo = "";
 
 addEventListeners();
 
 function addEventListeners() {
   for (let key of Object.keys(buttons)) {
-    buttons[key].addEventListener("click", () => handleBtnClick(key));
+    buttons[key][0].addEventListener("click", () => {
+      const callBackFn = buttons[key][1];
+      callBackFn(key);
+    });
   }
 }
 
-function handleBtnClick(userInput) {
-  switch(userInput) {
-    case "1":
-      assignNum("1");
-      break;
-    case "2":  
-      assignNum("2");
-      break;
-    case "3":
-      assignNum("3");
-      break;
-    case "4":
-      assignNum("4");
-      break;
-    case "5":
-      assignNum("5");
-      break;
-    case "6":
-      assignNum("6");
-      break;
-    case "7":
-      assignNum("7");
-      break;
-    case "8":
-      assignNum("8");
-      break;
-    case "9":
-      assignNum("9");
-      break;
-    case "0":
-      assignNum("0");
-      break;
-    // case ".":
-    //   assignNum(".");
-    //   break;
-    case "+":
-      assignOperator("+", add);
-      break;
-    case "-":
-      assignOperator("-", subtract);
-      break;
-    case "*":
-      assignOperator("*", multiply);
-      break;
-    case "/":
-      assignOperator("/", divide);
-      break;
-    case "=":
-      if (operator === "") return;
-      const result = getOperationResult(currentOperatorFunc);
-      displayResult(result);
-      valueOne = result;
-      reset();
-      break;
-    case "c":
-      valueOne = "";
-      displayResult(valueOne);
-      reset();
-      break;
-  }
+function handleBtnEqualClick() {
+  if (operator === "") return;
+  const result = getOperationResult(currentOperatorFunc);
+  displayResult(result);
+  valueOne = result;
+  reset();
+}
+
+function handleBtnClearClick() {
+  valueOne = "";
+  displayResult(valueOne);
+  reset();
 }
     
 function displayResult(result) {
