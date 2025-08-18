@@ -105,7 +105,28 @@ function assignOperator(o, operatorFn) {
 }
 
 function getOperationResult(operatorFn) {
-  return String(operatorFn(parseInt(valueOne), parseInt(valueTwo)));
+  return String(roundNumber(operatorFn(parseFloat(valueOne), parseFloat(valueTwo))));
+}
+
+function roundNumber(number) {
+  const MAX_NUM_LENGTH = 14;
+  const LENGTH_OF_DECIMAL_CHAR = 1;
+
+  if (!Number.isInteger(number)) {
+    const floatStr = number.toString();
+    const splittedFloat = floatStr.split(".")
+    const digitsBeforeComma = splittedFloat[0].length;
+    const maxPossibleDecimalsAfterComma = MAX_NUM_LENGTH - digitsBeforeComma - LENGTH_OF_DECIMAL_CHAR;
+
+    if (floatStr.length <= MAX_NUM_LENGTH) {
+      return number.toPrecision(floatStr.length - LENGTH_OF_DECIMAL_CHAR);
+    } else {
+      const roundingFactor = 10 ** maxPossibleDecimalsAfterComma;
+      return Math.round(number.toPrecision(MAX_NUM_LENGTH - LENGTH_OF_DECIMAL_CHAR) * roundingFactor) / roundingFactor;
+    }
+  } else {
+    return number;
+  }
 }
 
 function isDividedByZero() {
