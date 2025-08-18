@@ -40,6 +40,12 @@ function addEventListeners() {
 
 function handleBtnEqualClick() {
   if (operator === "") return;
+
+  if (isDividedByZero()) {
+    displayResult("not allowed");
+    return;
+  } 
+
   const result = getOperationResult(currentOperatorFunc);
   displayResult(result);
   valueOne = result;
@@ -80,6 +86,11 @@ function assignNum(num) {
 function assignOperator(o, operatorFn) {
   if (valueOne === "") return;
 
+  if (isDividedByZero()) {
+    displayResult("not allowed");
+    return;
+  } 
+
   if (valueOne !== "" && valueTwo !== "") {
     valueOne = getOperationResult(
       currentOperatorFunc ? currentOperatorFunc : operatorFn
@@ -95,6 +106,10 @@ function assignOperator(o, operatorFn) {
 
 function getOperationResult(operatorFn) {
   return String(operatorFn(parseInt(valueOne), parseInt(valueTwo)));
+}
+
+function isDividedByZero() {
+  return operator === "/" && valueTwo === "0";
 }
 
 function print() {
