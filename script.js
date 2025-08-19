@@ -21,6 +21,7 @@ const buttons = {
   "/": [document.querySelector("#btnDivide"), () => addOperator("/", divide)],
   "=": [document.querySelector("#btnEqual"), () => handleBtnEqualClick("=")],
   "c": [document.querySelector("#btnClear"), () => handleBtnClearClick("c")],
+  "<": [document.querySelector("#btnDel"), () => handleBtnDeleteClick("<")],
 }
 
 let valueOne = "";
@@ -35,6 +36,45 @@ function addEventListeners() {
     const domElement = buttons[key][0];
     const callbackFn = () => buttons[key][1]();
     domElement.addEventListener("click", () => callbackFn());
+  }
+}
+
+function handleBtnDeleteClick() {
+  const valueOneIncludesDotBeforeDeletion = valueOne.includes(".");
+  const valueTwoIncludesDotBeforeDeletion = valueTwo.includes(".");
+
+  if (valueTwo) {
+    valueTwo = valueTwo.slice(0, -1);
+    displayResult(valueTwo);
+    const valueTwoIncludesDotAfterDeletion = valueTwo.includes(".");
+
+    if (valueTwoIncludesDotBeforeDeletion && !valueTwoIncludesDotAfterDeletion) {
+      activateDotBtn();
+    }
+
+    return;
+  } else if (operator) {
+    operator = operator.slice(0, -1);
+    displayResult(valueOne);
+    
+    // deactivates btnDot if valueOne is decimal
+    if (valueOne.includes(".")) {
+      btnDot.classList.add("btnInactive");
+    } else {
+      activateDotBtn();
+    }
+
+    return;
+  } else if (valueOne) {
+    valueOne = valueOne.slice(0, -1);
+    displayResult(valueOne);
+    const valueOneIncludesDotAfterDeletion = valueOne.includes(".");
+    
+    if (valueOneIncludesDotBeforeDeletion && !valueOneIncludesDotAfterDeletion) {
+      activateDotBtn();
+    }
+
+    return;
   }
 }
 
@@ -94,18 +134,17 @@ function addChar(num) {
   }
 
   displayResult(valueTwo ? valueTwo : valueOne);
-  print();
 }
 
 function addOperator(o, operatorFn) {
-  if (valueOne === "") return;
+  if (!valueOne) return;
 
   if (isDividedByZero()) {
     displayResult("not allowed");
     return;
   } 
 
-  if (valueOne !== "" && valueTwo !== "") {
+  if (valueOne && valueTwo) {
     valueOne = getOperationResult(
       currentOperatorFunc ? currentOperatorFunc : operatorFn
     );
@@ -116,7 +155,6 @@ function addOperator(o, operatorFn) {
   activateDotBtn();
   operator = o;
   currentOperatorFunc = operatorFn;
-  print();
 }
 
 function getOperationResult(operatorFn) {
@@ -149,14 +187,6 @@ function formatNumberForDisplay(number) {
 
 function isDividedByZero() {
   return operator === "/" && valueTwo === "0";
-}
-
-function print() {
-  console.log("----------");
-  console.log({valueOne});
-  console.log({operator});
-  console.log({currentOperatorFunc});
-  console.log({valueTwo});  
 }
 
 function add(a, b) {
