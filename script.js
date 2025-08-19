@@ -39,6 +39,8 @@ function addEventListeners() {
 }
 
 function handleBtnEqualClick() {
+  formatNumberForDisplay();
+
   if (operator === "") return;
 
   if (isDividedByZero()) {
@@ -105,27 +107,30 @@ function assignOperator(o, operatorFn) {
 }
 
 function getOperationResult(operatorFn) {
-  return String(roundNumber(operatorFn(parseFloat(valueOne), parseFloat(valueTwo))));
+  return String(formatNumberForDisplay(operatorFn(parseFloat(valueOne), parseFloat(valueTwo))));
 }
 
-function roundNumber(number) {
-  const MAX_NUM_LENGTH = 14;
-  const LENGTH_OF_DECIMAL_CHAR = 1;
+function formatNumberForDisplay(number) {
+  const MAX_DISPLAY_LENGTH = 14;
+  const DECIMAL_POINT_LENGTH = 1;
 
-  if (!Number.isInteger(number)) {
-    const floatStr = number.toString();
-    const splittedFloat = floatStr.split(".")
-    const digitsBeforeComma = splittedFloat[0].length;
-    const maxPossibleDecimalsAfterComma = MAX_NUM_LENGTH - digitsBeforeComma - LENGTH_OF_DECIMAL_CHAR;
-
-    if (floatStr.length <= MAX_NUM_LENGTH) {
-      return number.toPrecision(floatStr.length - LENGTH_OF_DECIMAL_CHAR);
-    } else {
-      const roundingFactor = 10 ** maxPossibleDecimalsAfterComma;
-      return Math.round(number.toPrecision(MAX_NUM_LENGTH - LENGTH_OF_DECIMAL_CHAR) * roundingFactor) / roundingFactor;
-    }
-  } else {
+  if (Number.isInteger(number)) {
     return number;
+  }
+
+  const numberString = number.toString();
+  const [integerPart, decimalPart] = numberString.split(".");
+  const integerDigits = integerPart.length;
+  const maxDecimalPlaces = MAX_DISPLAY_LENGTH - integerDigits - DECIMAL_POINT_LENGTH;
+
+  if (numberString.length <= MAX_DISPLAY_LENGTH) {
+    return number;
+  }
+
+  if (maxDecimalPlaces > 0) {
+    return Number(number.toFixed(maxDecimalPlaces));
+  } else {
+    return Math.round(number);
   }
 }
 
