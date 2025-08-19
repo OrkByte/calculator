@@ -56,13 +56,7 @@ function handleBtnDeleteClick() {
   } else if (operator) {
     operator = operator.slice(0, -1);
     displayResult(valueOne);
-    
-    // deactivates btnDot if valueOne is decimal
-    if (valueOne.includes(".")) {
-      btnDot.classList.add("btnInactive");
-    } else {
-      activateDotBtn();
-    }
+    setDotBtnState();
 
     return;
   } else if (valueOne) {
@@ -75,6 +69,14 @@ function handleBtnDeleteClick() {
     }
 
     return;
+  }
+}
+
+function setDotBtnState() {
+  if (valueOne.includes(".")) { // deactivates btnDot if valueOne is decimal
+    btnDot.classList.add("btnInactive");
+  } else {
+    activateDotBtn();
   }
 }
 
@@ -102,13 +104,14 @@ function handleBtnEqualClick() {
   const result = getOperationResult(currentOperatorFunc);
   displayResult(result);
   valueOne = result;
-  activateDotBtn();
+  setDotBtnState();
   reset();
 }
 
 function handleBtnClearClick() {
   valueOne = "";
   displayResult(valueOne);
+  setDotBtnState();
   reset();
 }
     
