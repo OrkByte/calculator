@@ -1,23 +1,24 @@
 const display = document.querySelector("#display");
+const btnDot = document.querySelector("#btnDot");
 
 // { key: [ domElement, callbackFn ] } The key is the button type and 
 // the value is an array containing the DOM element and a callback function
 const buttons = { 
-  "1": [document.querySelector("#btnOne"), () => assignNum("1")],
-  "2": [document.querySelector("#btnTwo"), () => assignNum("2")],
-  "3": [document.querySelector("#btnThree"), () => assignNum("3")],
-  "4": [document.querySelector("#btnFour"), () => assignNum("4")],
-  "5": [document.querySelector("#btnFive"), () => assignNum("5")],
-  "6": [document.querySelector("#btnSix"), () => assignNum("6")],
-  "7": [document.querySelector("#btnSeven"), () => assignNum("7")],
-  "8": [document.querySelector("#btnEight"), () => assignNum("8")],
-  "9": [document.querySelector("#btnNine"), () => assignNum("9")],
-  "0": [document.querySelector("#btnZero"), () => assignNum("0")],
-  ".": [document.querySelector("#btnDot"), () => assignNum(".")],
-  "+": [document.querySelector("#btnAdd"), () => assignOperator("+", add)],
-  "-": [document.querySelector("#btnSubtract"), () => assignOperator("-", subtract)],
-  "*": [document.querySelector("#btnMultiply"), () => assignOperator("*", multiply)],
-  "/": [document.querySelector("#btnDivide"), () => assignOperator("/", divide)],
+  "1": [document.querySelector("#btnOne"), () => addChar("1")],
+  "2": [document.querySelector("#btnTwo"), () => addChar("2")],
+  "3": [document.querySelector("#btnThree"), () => addChar("3")],
+  "4": [document.querySelector("#btnFour"), () => addChar("4")],
+  "5": [document.querySelector("#btnFive"), () => addChar("5")],
+  "6": [document.querySelector("#btnSix"), () => addChar("6")],
+  "7": [document.querySelector("#btnSeven"), () => addChar("7")],
+  "8": [document.querySelector("#btnEight"), () => addChar("8")],
+  "9": [document.querySelector("#btnNine"), () => addChar("9")],
+  "0": [document.querySelector("#btnZero"), () => addChar("0")],
+  ".": [btnDot, () => handleDotBtnClick()],
+  "+": [document.querySelector("#btnAdd"), () => addOperator("+", add)],
+  "-": [document.querySelector("#btnSubtract"), () => addOperator("-", subtract)],
+  "*": [document.querySelector("#btnMultiply"), () => addOperator("*", multiply)],
+  "/": [document.querySelector("#btnDivide"), () => addOperator("/", divide)],
   "=": [document.querySelector("#btnEqual"), () => handleBtnEqualClick("=")],
   "c": [document.querySelector("#btnClear"), () => handleBtnClearClick("c")],
 }
@@ -31,16 +32,26 @@ addEventListeners();
 
 function addEventListeners() {
   for (let key of Object.keys(buttons)) {
-    buttons[key][0].addEventListener("click", () => {
-      const callBackFn = buttons[key][1];
-      callBackFn(key);
-    });
+    const domElement = buttons[key][0];
+    const callbackFn = () => buttons[key][1]();
+    domElement.addEventListener("click", () => callbackFn());
   }
 }
 
-function handleBtnEqualClick() {
-  formatNumberForDisplay();
+function handleDotBtnClick() {
+  const isPressed = btnDot.classList.contains("btnInactive");
 
+  if (!isPressed) {
+    addChar(".");
+    btnDot.classList.add("btnInactive");
+  } 
+}
+
+function activateDotBtn() {
+  btnDot.classList.remove("btnInactive");
+}
+
+function handleBtnEqualClick() {
   if (operator === "") return;
 
   if (isDividedByZero()) {
@@ -51,6 +62,7 @@ function handleBtnEqualClick() {
   const result = getOperationResult(currentOperatorFunc);
   displayResult(result);
   valueOne = result;
+  activateDotBtn();
   reset();
 }
 
@@ -70,7 +82,7 @@ function reset() {
   operator = "";
 }
 
-function assignNum(num) {
+function addChar(num) {
   if (valueOne === "") {
     valueOne = num;
   } else if (valueTwo !== "" && operator !== "") {
@@ -85,7 +97,7 @@ function assignNum(num) {
   print();
 }
 
-function assignOperator(o, operatorFn) {
+function addOperator(o, operatorFn) {
   if (valueOne === "") return;
 
   if (isDividedByZero()) {
@@ -101,6 +113,7 @@ function assignOperator(o, operatorFn) {
     valueTwo = "";
   } 
 
+  activateDotBtn();
   operator = o;
   currentOperatorFunc = operatorFn;
   print();
